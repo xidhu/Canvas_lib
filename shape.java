@@ -64,10 +64,8 @@ class shape{
         return true;
     }
     void addPoint(int x,int y){
-        if(circle==null){
         point n=new point(x, y);
         points.add(n);
-        }
     }
     double getPerimeter(){
         double peri=0;

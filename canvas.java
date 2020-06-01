@@ -1,8 +1,10 @@
 
+import java.util.LinkedList;
 class canvas{
     private int h = 240,w = 320;
     private char border_char='*';
     private char canv[][];
+    LinkedList<objectX> objects = new LinkedList<objectX>();
     canvas(int x,int y,char border_char){
             this.h=y+2; this.w=x+2;
             this.border_char=border_char;
@@ -71,17 +73,20 @@ class canvas{
         else
             return false;
     }
-    boolean drawObject(objectX o,int x,int y,char p){
-        boolean ok=true;
-        for(point i:o.points){
-            ok=insideCanvas(i.x+x, i.y+y);
-        }
-        if(ok){
-            for(int i=1;i<o.points.size();i++){
-                addPoint(o.points.get(i).x+x-o.points.getFirst().x, o.points.get(i).y+y-o.points.getFirst().y, p);
-            }
-
-        }
+    boolean addObject(objectX o,String objectName){
+        o.objectName=objectName;
+        objects.add(o);
         return true;
+    }
+    void drawObject(String objname,int frame,int x,int y,char p){
+        objectX o=null;
+        for(objectX i : objects){
+            if(i.objectName==objname)
+                o=i;
+        }
+        o.selectFrame(frame);
+        for(int i=1;i<o.points.size();i++){
+            addPoint(o.points.get(i).x+x-o.points.get(0).x, o.points.get(i).y+y-o.points.get(0).y, p);
+        }
     }
 }

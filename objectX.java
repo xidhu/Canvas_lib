@@ -2,16 +2,41 @@ import java.util.LinkedList;
 public class objectX {
     private FileX fil;
     private String filename;
+    int frame_no=0;
+    private int frames_count=1;
+    String objectName;
     LinkedList<point> points = new LinkedList<point>();
+    LinkedList<LinkedList<point>> frames = new LinkedList<LinkedList<point>>();
     objectX(String filename){
         this.filename=filename;
         fil=new FileX(this.filename);
-        if(fil.LineCount()>0){
+        if(fil.LineCount()>3){
         for(String st:fil.Lines()){
             String x[]=st.split(",");
             this.addPoint(Integer.parseInt(x[0].replaceAll("\\s+","")),Integer.parseInt(x[1].replaceAll("\\s+","")));
+            frame_no=0;
+            frames_count=1;
             }
         }
+    }
+    void addNewFrame(){
+        frames_count++;
+    }
+    boolean selectFrame(int x){
+        frames.add(frame_no,points);
+        if(0<=x&&x<=frames_count){
+            if(frames.size()>x){
+            points=frames.get(x);
+            }
+            else
+                points=new LinkedList<point>();
+                frame_no=x;
+        }
+        return true;
+    }
+    boolean saveFrame(){
+        frames.add(frame_no,points);
+        return true;
     }
     boolean ConnectPoints(int X0,int Y0,int X1,int Y1){
         try{
@@ -35,8 +60,8 @@ public class objectX {
                 return false;
             }
     }
-    void saveObject(){
-        fil=new FileX(filename);
+    void saveObject(String filn){
+        fil=new FileX(filn);
         fil.clear();
             for(point p:points){
                 fil.appendLine(p.x+","+p.y);
@@ -48,6 +73,7 @@ public class objectX {
     void addCenter(int x,int y){
         addPoint(x, y);
     }
+
     boolean addShape(shape s){
         point f;
         if(s.isCircle){
@@ -64,8 +90,16 @@ public class objectX {
         
         return true;
     }
+    void createObject(String ObjectName){
+        objectName=ObjectName;
+    }
     void deleteObject(){
+        frame_no=0;
+        frames_count=1;
         points.clear();
+    }
+    void addFrame(){
+        frames.add(points);
     }
     void drawcircle(int x0, int y0, int radius)
 {
